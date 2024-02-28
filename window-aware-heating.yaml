@@ -2,7 +2,7 @@ blueprint:
   name: Window-aware Heating
   author: Tyrant
   description: "No"
-  source_url: https://github.com/ghtyrant/ha-blueprints/blob/master/window-aware-heating.yaml
+  source_url: https://github.com/ghtyrant/ha-blueprints/blob/main/window-aware-heating.yaml
   domain: automation
   homeassistant:
     min_version: 2023.8.0
