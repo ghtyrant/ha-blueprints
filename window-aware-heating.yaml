@@ -1,0 +1,67 @@
+blueprint:
+  name: Window-aware Heating
+  author: Tyrant
+  description: "No"
+  source_url: https://github.com/ghtyrant/ha-blueprints/blob/master/window-aware-heating.yaml
+  domain: automation
+  homeassistant:
+    min_version: 2023.8.0
+
+  input:
+    topic:
+      name: Topic
+      description: The main MQTT Topic for your window sensor.
+      default: "zigbee2mqtt/?"
+      selector:
+        text:
+          multiline: false
+    temp_off:
+      name: Target off temperature
+      description: Target off temperature
+      default: 5
+      selector:
+        number:
+          min: 0
+          max: 40
+          unit_of_measurement: "°C"
+    temp_on:
+      name: Target on temperature
+      description: Target on temperature
+      default: 19
+      selector:
+        number:
+          min: 0
+          max: 40
+          unit_of_measurement: "°C"
+    thermostat:
+      name: Heaty thingy
+      description: Heat thing
+      selector:
+        device:
+          entity:
+            - domain: climate
+trigger:
+  - platform: mqtt
+    topic: !input topic
+condition: []
+action:
+  - variables:
+      contact: "{{ trigger.payload_json.contact }}"
+  - if:
+      - condition: template
+        value_template: "{{ contact }}"
+    then:
+      - service: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: !input temp_on
+        target:
+          device_id: !input thermostat
+    else:
+      - service: climate.set_temperature
+        metadata: {}
+        data:
+          temperature: !input temp_off
+        target:
+          device_id: !input thermostat
+mode: restart
